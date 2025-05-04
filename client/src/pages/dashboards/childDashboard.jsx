@@ -1,168 +1,155 @@
-import { motion } from "framer-motion";
-import { CircleDollarSign, LogOut } from "lucide-react";
+import React from 'react';
+import { CircleDollarSign, TrendingDown, TrendingUp } from 'lucide-react';
 
 export default function ChildDashboard() {
-  const balance = 125.75;
-  const savings = 75.0;
-  const activityCount = 3;
-
-  const goals = [
-    { name: "New Bicycle", target: 200, saved: 125, startDate: "May 1" },
-    { name: "Summer Camp", target: 150, saved: 30, startDate: "June 15" },
-  ];
-
-  const activities = [
-    { label: "Weekly Allowance", amount: 10, date: "2 days ago" },
-    { label: "Comic Book", amount: -4.99, date: "4 days ago" },
-    { label: "Birthday Gift", amount: 20, date: "1 week ago" },
-  ];
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="min-h-screen bg-gray-50 text-black p-6 space-y-8"
-    >
-      {/* Navbar */}
-      <header className="flex justify-between items-center">
-        <div className="flex items-center gap-2 text-xl font-bold text-green-600">
-          <CircleDollarSign className="h-6 w-6" />
-          Piggy AI
-        </div>
-        <nav className="flex items-center gap-6">
-          <a className="text-green-600 font-semibold underline" href="#">Dashboard</a>
-          <a href="#">Goals</a>
-          <a href="#">Expenses</a>
-        </nav>
-        <button className="flex items-center gap-1 text-red-500">
-          <LogOut className="h-4 w-4" /> Logout
+    <div className="min-h-screen bg-white px-6 py-4 text-gray-800">
+      <header className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-semibold">Hi, Alex!</h1>
+        <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
+          Add Expense
         </button>
       </header>
 
-      <section className="text-2xl font-bold">Hi, Alex!</section>
-
-      {/* Summary Section */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <SummaryCard
-          title="My Balance"
-          description="Available to spend"
-          value={`$${balance.toFixed(2)}`}
-          note="+$10.00 from last week"
-          highlighted
-        />
-        <SummaryCard
-          title="Savings"
-          description="For your goals"
-          value={`$${savings.toFixed(2)}`}
-          note="63% to your bicycle goal"
-        />
-        <SummaryCard
-          title="This Week"
-          description="Your activity"
-          value={activityCount}
-          note="Transactions this week"
-        />
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <Card title="My Balance" value="$125.75" subtitle="+$10.00 from last week" />
+        <Card title="Credit Score" value="720" subtitle="+15 points this month" />
+        <Card title="Monthly Spending" value="$45.25" subtitle="45% of your monthly limit" />
       </section>
 
-      <div className="flex justify-end">
-        <button className="bg-green-500 text-white px-4 py-2 rounded-md font-semibold shadow">
-          Add Expense
-        </button>
-      </div>
-
-      {/* Goals Section */}
-      <section>
-        <h2 className="text-xl font-bold mb-4">My Savings Goals</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {goals.map((goal) => {
-            const progress = Math.min((goal.saved / goal.target) * 100, 100);
-            return (
-              <div key={goal.name} className="bg-white p-6 rounded-xl shadow space-y-4">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-semibold">{goal.name}</h3>
-                  <p className="text-sm text-gray-500">
-                    Target: ${goal.target.toFixed(2)}
-                  </p>
-                </div>
-                <div className="text-sm font-medium text-gray-600">Progress</div>
-                <div className="h-3 w-full bg-gray-200 rounded">
-                  <div
-                    className="h-full bg-green-500 rounded"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-                <div className="flex justify-between text-sm text-gray-500">
-                  <span>Started: {goal.startDate}</span>
-                  <span>
-                    ${goal.saved.toFixed(2)} / ${goal.target.toFixed(2)}
-                  </span>
-                </div>
-                <button className="w-full border rounded py-1 mt-2 hover:bg-gray-100">
-                  Add Savings
-                </button>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Recent Activity */}
-      <section>
-        <h2 className="text-xl font-bold mb-4">Recent Activity</h2>
-        <div className="flex gap-4 mb-4">
-          {["All", "Money In", "Money Out"].map((type) => (
-            <button
-              key={type}
-              className="px-4 py-1 border rounded-full text-sm text-gray-700 hover:bg-gray-100"
-            >
-              {type}
-            </button>
-          ))}
-        </div>
-
-        <div className="bg-white rounded-lg shadow divide-y">
-          {activities.map((item, index) => (
-            <div
-              key={index}
-              className="flex justify-between items-center px-4 py-3"
-            >
-              <div>
-                <p className="font-medium">{item.label}</p>
-                <p className="text-sm text-gray-500">{item.date}</p>
-              </div>
-              <p
-                className={`font-semibold ${
-                  item.amount >= 0 ? "text-green-600" : "text-red-500"
-                }`}
-              >
-                {item.amount >= 0 ? "+" : "-"}${Math.abs(item.amount).toFixed(2)}
-              </p>
+      <section className="grid md:grid-cols-2 gap-6 mb-8">
+        <div className="bg-white shadow-md rounded-xl p-5 border flex  flex-col space-y-10">
+          <h2 className="text-lg font-semibold mb-2">Credit Score</h2>
+          <div className="flex items-center space-x-6 justify-center">
+            <div className=" ">
+              {/* <div className="rounded-full border-4 border-green-500 w-full h-full flex items-center justify-center text-xl font-bold text-green-600">
+                720
+              </div> */}
+              <CreditRing score={720} max={850} />
             </div>
-          ))}
+            <div>
+              <p className="text-md text-gray-700 font-semibold">Excellent</p>
+              <progress className="w-48 mt-2" value="90" max="100" />
+              <p className="text-xs text-gray-500 mt-1">How to Improve</p>
+            </div>
+          </div>
         </div>
 
-        <div className="text-center mt-4">
-          <button className="border px-4 py-1 rounded hover:bg-gray-100 text-sm">
-            View All Activity
-          </button>
+        <div className="bg-white shadow-md rounded-xl p-5 border">
+          <h2 className="text-lg font-semibold mb-2">Credit Factors</h2>
+          <p className="text-sm text-gray-500 mb-4">What affects your score</p>
+          <Factor label="Payment History" level="Excellent" percent={95} />
+          <Factor label="Spending Habits" level="Good" percent={75} />
+          <Factor label="Savings Rate" level="Fair" percent={55} color="yellow" />
+          <button className="mt-3 text-sm text-green-600 font-medium">View Details</button>
         </div>
       </section>
-    </motion.div>
+
+      <section className="mb-6">
+        <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
+        <div className="flex gap-3 mb-4 text-sm">
+          <button className="bg-green-100 text-green-700 px-3 py-1 rounded-full">All</button>
+          <button className="px-3 py-1 text-gray-600">Money In</button>
+          <button className="px-3 py-1 text-gray-600">Money Out</button>
+        </div>
+
+        <div className="space-y-2">
+          <TransactionItem title="Weekly Allowance" daysAgo="2 days ago" amount="+$10.00" positive />
+          <TransactionItem title="Comic Book" daysAgo="4 days ago" amount="-$4.99" />
+          <TransactionItem title="Birthday Gift" daysAgo="1 week ago" amount="+$20.00" positive />
+        </div>
+      </section>
+    </div>
   );
 }
 
-// --- Reusable Summary Card ---
-function SummaryCard({ title, description, value, note, highlighted = false }) {
+function Card({ title, value, subtitle }) {
   return (
-    <div
-      className={`p-6 rounded-xl shadow ${
-        highlighted ? "border border-green-400" : "bg-white"
-      }`}
-    >
-      <p className="text-sm text-gray-500">{title}</p>
-      <h3 className="text-2xl font-bold">{value}</h3>
-      <p className="text-sm text-gray-500">{description}</p>
-      <p className="text-xs text-green-600 mt-1">{note}</p>
+    <div className="bg-white border rounded-xl shadow-sm p-5">
+      <h3 className="text-sm text-gray-500 mb-1">{title}</h3>
+      <p className="text-2xl font-bold">{value}</p>
+      <p className="text-xs text-green-600 mt-1">{subtitle}</p>
     </div>
+  );
+}
+
+function Factor({ label, level, percent, color = 'green' }) {
+  const colorMap = {
+    green: 'bg-green-500',
+    yellow: 'bg-yellow-500',
+    red: 'bg-red-500',
+  };
+  return (
+    <div className="mb-2">
+      <div className="flex justify-between text-sm text-gray-600 mb-1">
+        <span>{label}</span>
+        <span>{level}</span>
+      </div>
+      <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className={`${colorMap[color]} h-2 rounded-full`} style={{ width: `${percent}%` }}></div>
+      </div>
+    </div>
+  );
+}
+
+function TransactionItem({ title, daysAgo, amount, positive = false }) {
+  return (
+    <div className="flex justify-between items-center bg-white p-4 border rounded-lg shadow-sm">
+      <div>
+        <p className="font-medium">{title}</p>
+        <p className="text-xs text-gray-500">{daysAgo}</p>
+      </div>
+      <p className={`font-semibold ${positive ? 'text-green-600' : 'text-red-500'}`}>{amount}</p>
+    </div>
+  );
+}
+function CreditRing({ score = 720, max = 850 }) {
+  const radius = 70;
+  const stroke = 10;
+  const normalizedScore = Math.min(score, max);
+  const circumference = 2 * Math.PI * radius;
+  const progress = (normalizedScore / max) * circumference;
+  const offset = circumference - progress;
+  const size = radius * 2 + stroke * 2;
+  const center = size / 2;
+
+  return (
+    <svg width={size} height={size}>
+      {/* Background ring */}
+      <circle
+        cx={center}
+        cy={center}
+        r={radius}
+        stroke="#E5E7EB"
+        strokeWidth={stroke}
+        fill="none"
+      />
+      {/* Rotated progress ring */}
+      <g transform={`rotate(-90 ${center} ${center})`}>
+        <circle
+          cx={center}
+          cy={center}
+          r={radius}
+          stroke="#22C55E"
+          strokeWidth={stroke}
+          fill="none"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+          style={{ transition: "stroke-dashoffset 0.6s ease" }}
+        />
+      </g>
+      {/* Text remains upright */}
+      <text
+        x="50%"
+        y="50%"
+        dy="0.35em"
+        textAnchor="middle"
+        className="fill-green-600 font-bold"
+        fontSize="20"
+      >
+        {score}
+      </text>
+    </svg>
   );
 }
