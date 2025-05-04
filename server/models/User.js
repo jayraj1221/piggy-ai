@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');  // For password hashing
+const bcrypt = require('bcryptjs');  
 
 const userSchema = new mongoose.Schema(
   {
@@ -25,20 +25,24 @@ const userSchema = new mongoose.Schema(
     parentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: function() {
-        return this.role === 'child';  // Only children will have a parentId
+      required: function () {
+        return this.role === 'child';  // Only required if the user is a child
       },
     },
-    pocketMoney: {
-      type: Number,
-      default: 0,  // Initial pocket money for children
-    },
+    creditScore: { 
+      type: Number, 
+      default: 100 
+    }, // starting score
+    tag: { 
+      type: String, 
+      default: "New User" 
+    }
   },
   { timestamps: true } // Automatically manage createdAt and updatedAt fields
 );
 
 // Hash password before saving to database
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next(); // Only hash if password is modified
 
   try {
@@ -51,7 +55,7 @@ userSchema.pre('save', async function(next) {
 });
 
 // Compare input password with stored hashed password
-userSchema.methods.matchPassword = async function(enteredPassword) {
+userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 

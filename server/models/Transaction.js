@@ -27,18 +27,10 @@ const transactionSchema = new mongoose.Schema({
   date: {
     type: Date,
     default: Date.now,
-  },
-  creditImpact: {
-    type: Number, // Positive or negative impact on credit score
-    default: 0,
   }
+  
 }, {
   timestamps: true,
 });
 
 module.exports = mongoose.model('Transaction', transactionSchema);
-;
-
-const Transaction = mongoose.model('Transaction', transactionSchema);
-
-module.exports = Transaction;

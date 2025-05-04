@@ -7,7 +7,7 @@ const cors = require('cors');
 dotenv.config();
 
 // Import routes
-const authRoutes = require('./routes/authRoute');
+const authRoutes = require('./routes/auth.route');
 const transactionRoutes = require('./routes/transactionRoute'); 
 
 const app = express();
@@ -25,6 +25,10 @@ mongoose
 // Use routes
 app.use('/api', authRoutes);
 app.use('/api', transactionRoutes);
+
+app.use('/test', (req, res) => {
+  res.json({ message: 'Server is working!' });
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
