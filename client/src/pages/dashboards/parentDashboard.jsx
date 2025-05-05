@@ -8,18 +8,52 @@ import SummaryCard from "../../components/summary-card";
 import { useUser } from "../../context/UserContext";
 import AddChildModal from "../../components/add-child-modal";
 
-export default function ParentDashboard() {
+export default  function ParentDashboard() {
   const [filter, setFilter] = useState("All");
   const navigate = useNavigate();
-  const { user, logout, loading } = useUser();
+  const { user, logout, loading, token } =  useUser();
   const [isAddModalOpen, setAddModalOpen] = useState(false);
+  const [children, setChildren] = useState([]);
+  const [loadingChildren, setLoadingChildren] = useState(true);
+
+  const fetchChildren = async () => {
+    try {
+      const res = await fetch('http://localhost:5000/auth/get-children', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token || localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        },          
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        console.log(data)
+        setChildren(data || []);
+      } else {
+        console.error(data.message || 'Failed to fetch children');
+      }
+    } catch (error) {
+      console.error('Error fetching children:', error);
+    } finally {
+      setLoadingChildren(false);
+    }
+  };
 
   useEffect(() => {
     if (!loading && !user) {
       navigate('/');
     }
+    if (user) {
+      fetchChildren();
+    }
   }, [user, loading, navigate]);
-
+  
+  const handleChildAdded = () => {
+    setAddModalOpen(false);   // close modal
+    fetchChildren();          // refetch updated list
+  };
+  
   const transactions = [
     { id: 1, type: "deposit", child: "Alex", label: "Weekly Allowance", amount: 10, date: "2 days ago" },
     { id: 2, type: "withdrawal", child: "Jamie", label: "Toy Store Purchase", amount: -15.99, date: "3 days ago" },
@@ -57,10 +91,6 @@ export default function ParentDashboard() {
         <SummaryCard title="Recent Activity" value="12" note="Transactions processed" />
       </section>
 
-      <div className="flex justify-end">
-        <Button>Add Pocket Money</Button>
-      </div>
-
       {/* Children Overview */}
       <section>
         <div className="flex justify-between items-center mb-4">
@@ -68,22 +98,33 @@ export default function ParentDashboard() {
           <Button onClick={() => setAddModalOpen(true)}>+ Add Child</Button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <ChildCard
-            name="Alex"
-            age={10}
-            balance={125.75}
-            goal="Bicycle"
-            goalAmount={200}
-            progress={63}
-          />
-          <ChildCard
-            name="Jamie"
-            age={8}
-            balance={119.75}
-            goal="Video Game"
-            goalAmount={150}
-            progress={80}
-          />
+        {loadingChildren ? (
+           <p>Loading children...</p>
+            ) : children.length === 0 ? (
+           <p>No children added yet.</p>
+            ) : (
+            children.map((child) => (
+              <ChildCard
+              key={child._id || child.id}
+              name={child.name}
+              balance={typeof child.pocketMoney === 'number' ? child.pocketMoney : 0}
+              creditScore={child.creditScore}
+              totalCreditScore={850}
+              progress={
+                typeof child.creditScore === 'number'
+                  ? Math.min((child.creditScore / 850) * 100, 100)
+                  : 0
+              }
+              childId={child._id || child.id}
+              parentId={user._id || user.id}
+              onMoneyAssigned={handleChildAdded}
+              />
+
+            
+          ))
+        )}
+
+
         </div>
       </section>
 
@@ -133,7 +174,13 @@ export default function ParentDashboard() {
       {/* Add Child Modal */}
       {isAddModalOpen && user && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <AddChildModal isOpen={isAddModalOpen}parent={user} onClose={() => setAddModalOpen(false)} />
+    <AddChildModal
+  isOpen={isAddModalOpen}
+  onClose={() => setAddModalOpen(false)}
+  onSuccess={handleChildAdded} 
+  onMoneyAssigned={handleChildAdded}
+/>
+
   </div>
 )}
     </div>
