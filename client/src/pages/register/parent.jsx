@@ -1,103 +1,148 @@
-import React from 'react';
-import  Button  from "../../components/button";
-import { Input } from "../../components/input";
-import { Label } from "../../components/label";
-import { Logo } from "../../components/logo";
-import { Link } from 'react-router-dom'; 
+import React, { useState } from 'react';
+import Button from '../../components/button';
+import { Input } from '../../components/input';
+import { Label } from '../../components/label';
+import { Logo } from '../../components/logo';
+import { Link, useNavigate } from 'react-router-dom';
+import { useUser } from '../../context/UserContext'; // Import context hook
 
 export default function RegisterParentPage() {
-  return (
-    <div className="flex min-h-screen">
-      <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
-        <div className="mx-auto w-full max-w-sm lg:w-96">
-          <div>
-            <Logo />
-            <h2 className="mt-6 text-2xl font-bold leading-9 tracking-tight">Create a Parent Account</h2>
-            <p className="mt-2 text-sm leading-6 text-gray-500 dark:text-gray-400">
-              Already have an account?{" "}
-              <Link to="/login/parent" className="font-semibold text-primary hover:text-primary/80">
-                Sign in
-              </Link>
-            </p>
-          </div>
+  const navigate = useNavigate();
+  const { login } = useUser(); // Get login method from context
 
-          <div className="mt-10">
-            <form className="space-y-6">
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      return setError('Passwords do not match');
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch('http://localhost:5000/auth/register/parent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Something went wrong');
+      }
+
+      // Login through context: stores user and token
+      login(data.user, data.token);
+      navigate('/dashboard/parent');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex min-h-screen flex-col">
+      <div className="flex flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+        <div className="sm:mx-auto sm:w-full sm:max-w-md">
+          <div className="flex justify-center">
+            <Logo />
+          </div>
+          <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight">
+            Create Parent Account
+          </h2>
+        </div>
+
+        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
+          <div className="bg-white dark:bg-gray-950 px-6 py-12 shadow sm:rounded-lg sm:px-12">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
-                <Label htmlFor="name">Full name</Label>
-                <div className="mt-2">
-                  <Input id="name" name="name" type="text" autoComplete="name" required className="block w-full h-10" />
-                </div>
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  onChange={handleChange}
+                  value={formData.name}
+                />
               </div>
 
               <div>
                 <Label htmlFor="email">Email address</Label>
-                <div className="mt-2">
-                  <Input id="email" name="email" type="email" autoComplete="email" required className="block w-full h-10" />
-                </div>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  onChange={handleChange}
+                  value={formData.email}
+                />
               </div>
 
               <div>
                 <Label htmlFor="password">Password</Label>
-                <div className="mt-2">
-                  <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete="new-password"
-                    required
-                    className="block w-full h-10"
-                  />
-                </div>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  onChange={handleChange}
+                  value={formData.password}
+                />
               </div>
 
               <div>
-                <Label htmlFor="password-confirm">Confirm password</Label>
-                <div className="mt-2">
-                  <Input
-                    id="password-confirm"
-                    name="password-confirm"
-                    type="password"
-                    autoComplete="new-password"
-                    required
-                    className="block w-full h-10"
-                  />
-                </div>
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  required
+                  onChange={handleChange}
+                  value={formData.confirmPassword}
+                />
               </div>
 
-             
-              <div>
-                <Link to="/parent/dashboard">
-                  <Button type="button" className="w-full">
-                    Create account
-                  </Button>
-                </Link>
-              </div>
+              {error && <p className="text-red-500 text-sm">{error}</p>}
+
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? 'Creating...' : 'Create Account'}
+              </Button>
             </form>
-          </div>
-        </div>
-      </div>
 
-      <div className="relative hidden w-0 flex-1 lg:block">
-        <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-primary to-secondary opacity-20"></div>
-        <div className="absolute inset-0 flex items-center justify-center p-8">
-          <div className="max-w-lg text-white">
-            <h2 className="text-2xl font-bold mb-4">Why Choose Piggy AI?</h2>
-            <ul className="space-y-4">
-              {[
-                "Teach your children financial responsibility in a fun, engaging way",
-                "Track allowances, spending, and savings goals in one place",
-                "Age-appropriate financial education and tools",
-                "Secure, family-friendly platform designed for parents and children",
-              ].map((item, idx) => (
-                <li key={idx} className="flex items-start">
-                  <svg className="h-6 w-6 mr-2 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+            <div className="mt-6 text-center text-sm">
+              Already have an account?{' '}
+              <Link to="/" className="text-blue-500 underline">
+                Sign in
+              </Link>
+            </div>
           </div>
         </div>
       </div>

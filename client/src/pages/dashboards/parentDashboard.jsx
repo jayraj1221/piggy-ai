@@ -1,9 +1,24 @@
-import { useState } from "react";
-import { LogOut, CircleDollarSign } from "lucide-react";
+import { useState, useEffect } from "react";
+import { LogOut } from "lucide-react";
 import Button from "../../components/button";
 import { Logo } from "../../components/logo";
+import { useNavigate } from "react-router-dom";
+import ChildCard from "../../components/child-card";
+import SummaryCard from "../../components/summary-card";
+import { useUser } from "../../context/UserContext";
+import AddChildModal from "../../components/add-child-modal";
+
 export default function ParentDashboard() {
   const [filter, setFilter] = useState("All");
+  const navigate = useNavigate();
+  const { user, logout, loading } = useUser();
+  const [isAddModalOpen, setAddModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/');
+    }
+  }, [user, loading, navigate]);
 
   const transactions = [
     { id: 1, type: "deposit", child: "Alex", label: "Weekly Allowance", amount: 10, date: "2 days ago" },
@@ -22,7 +37,7 @@ export default function ParentDashboard() {
       {/* Navbar */}
       <header className="flex justify-between items-center">
         <div className="flex items-center gap-2 text-xl font-bold text-primary">
-          <Logo/>
+          <Logo />
         </div>
         <nav className="flex items-center gap-6">
           <a className="text-primary font-semibold underline" href="#">Dashboard</a>
@@ -30,7 +45,7 @@ export default function ParentDashboard() {
           <a href="#">Children</a>
           <a href="#">Settings</a>
         </nav>
-        <button className="flex items-center gap-1 text-red-500">
+        <button className="flex items-center gap-1 text-red-500" onClick={logout}>
           <LogOut className="h-4 w-4" /> Logout
         </button>
       </header>
@@ -48,7 +63,10 @@ export default function ParentDashboard() {
 
       {/* Children Overview */}
       <section>
-        <h2 className="text-xl font-bold mb-4">Children Overview</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">Children Overview</h2>
+          <Button onClick={() => setAddModalOpen(true)}>+ Add Child</Button>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <ChildCard
             name="Alex"
@@ -111,52 +129,13 @@ export default function ParentDashboard() {
           <Button variant="outline">View All Transactions</Button>
         </div>
       </section>
-    </div>
-  );
-}
 
-// --- Reusable Components ---
-function SummaryCard({ title, value, note }) {
-  return (
-    <div className="bg-white p-6 rounded-xl shadow space-y-2">
-      <p className="text-gray-500 text-sm">{title}</p>
-      <h3 className="text-2xl font-bold">{value}</h3>
-      <p className="text-xs text-green-600">{note}</p>
-    </div>
-  );
-}
-
-function ChildCard({ name, age, balance, goal, goalAmount, progress }) {
-  return (
-    <div className="bg-white p-6 rounded-xl shadow space-y-2">
-      <div className="flex justify-between items-center">
-        <div>
-          <h4 className="text-lg font-semibold">{name}</h4>
-          <p className="text-sm text-gray-500">Age: {age}</p>
-        </div>
-        <div className="text-right">
-          <p className="text-sm text-gray-500">Savings Goal</p>
-          <p className="font-bold">${goalAmount.toFixed(2)}</p>
-        </div>
-      </div>
-      <p className="text-sm">
-        <span className="text-gray-600">Current Balance: </span>
-        <span className="font-semibold">${balance.toFixed(2)}</span>
-      </p>
-      <p className="text-sm text-gray-600">Goal Progress: {goal}</p>
-      <div className="h-2 w-full bg-gray-200 rounded">
-        <div
-          className="bg-primary h-full rounded"
-          style={{ width: `${progress}%` }}
-        />
-      </div>
-      <div className="flex justify-between text-sm text-gray-500">
-        <span>{progress}% complete</span>
-        <Button size="sm">Add Money</Button>
-      </div>
-      <Button variant="outline" size="sm" className="mt-2">
-        View Details
-      </Button>
+      {/* Add Child Modal */}
+      {isAddModalOpen && user && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <AddChildModal isOpen={isAddModalOpen}parent={user} onClose={() => setAddModalOpen(false)} />
+  </div>
+)}
     </div>
   );
 }
