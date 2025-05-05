@@ -2,6 +2,7 @@ const authService = require('../services/auth.service');
 
 exports.registerParent = async (req, res) => {
   try {
+    console.log('Registering parent with data:', req.body);
     const result = await authService.registerParent(req.body);
     res.status(201).json(result);
   } catch (error) {
@@ -50,3 +51,13 @@ exports.assignPocketMoney = async (req, res) => {
     res.status(error.statusCode || 500).json({ message: error.message || 'Server error' });
   }
 };
+
+exports.getChildren = async (req, res) => {
+  try {
+    const result = await authService.getChildren(req.user);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error fetching children:', error);
+    res.status(error.statusCode || 500).json({ message: error.message || 'Server error' });
+  }
+}

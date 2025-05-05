@@ -99,3 +99,15 @@ exports.assignPocketMoney = async ({ childId, amount }) => {
     child
   };
 };
+
+
+exports.getChildren = async (parent) => {
+  if (!parent || parent.role !== 'parent') {
+    throw { statusCode: 400, message: 'Invalid parent ID' };
+  }
+
+  const children = await User.find({ parentId: parent._id }).select('-password');
+  if (!children) throw { statusCode: 404, message: 'No children found' };
+
+  return children;
+};
