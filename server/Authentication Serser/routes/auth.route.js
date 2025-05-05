@@ -8,5 +8,7 @@ const authController = require('../controllers/auth.controller');
 router.post('/register/parent', authController.registerParent);
 router.post('/register/child', protect, authController.registerChild);
 router.post('/login', authController.loginUser);
+router.post('/assign-pocket-money', authController.assignPocketMoney);
+router.post('/get-user', authController.getUser);
 
 module.exports = router;

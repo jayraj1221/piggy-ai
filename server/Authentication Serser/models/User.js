@@ -36,25 +36,29 @@ const userSchema = new mongoose.Schema(
     tag: { 
       type: String, 
       default: "New User" 
-    }
+    },
+    pocketMoney: { 
+      type: Number, 
+      default: 0 
+    }, 
   },
-  { timestamps: true } // Automatically manage createdAt and updatedAt fields
+  { timestamps: true } 
 );
 
-// Hash password before saving to database
+
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next(); // Only hash if password is modified
+  if (!this.isModified('password')) return next(); 
 
   try {
-    const salt = await bcrypt.genSalt(10);  // Generate salt with 10 rounds
+    const salt = await bcrypt.genSalt(10);  
     this.password = await bcrypt.hash(this.password, salt);  // Hash password
     next();
   } catch (error) {
-    next(error);  // Pass error to next middleware
+    next(error);  
   }
 });
 
-// Compare input password with stored hashed password
+
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };

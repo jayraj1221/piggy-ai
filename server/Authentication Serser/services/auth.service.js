@@ -77,3 +77,25 @@ exports.loginUser = async ({ email, password }) => {
     token,
   };
 };
+
+exports.getUser = async ({ userId }) => {
+  const user = await User.findById(userId).select('-password');
+  if (!user) throw { statusCode: 404, message: 'User not found' };
+
+  return user;
+};
+
+
+exports.assignPocketMoney = async ({ childId, amount }) => {
+
+  const child = await User.findById(childId);
+  if (!child) throw { statusCode: 404, message: 'Child not found' };
+
+  child.pocketMoney += amount;
+  await child.save();
+
+  return {
+    message: 'Pocket money assigned successfully',
+    child
+  };
+};
