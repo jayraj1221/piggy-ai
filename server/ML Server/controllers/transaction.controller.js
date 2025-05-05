@@ -2,6 +2,7 @@ const {
     handleAssignPocketMoney,
     handleSpendPocketMoney,
     handleGetTransactionHistory,
+    handleGetPocketMoneyHistory
 } = require('../services/transaction.service');
 
 exports.assignPocketMoney = async (req, res) => {
@@ -30,6 +31,16 @@ exports.getTransactionHistory = async (req, res) => {
         res.status(result.status).json(result.data);
     } catch (err) {
         console.error('Get transaction history error:', err);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+
+exports.getPocketMoneyHistory = async (req, res) => {
+    try {
+        const result = await handleGetPocketMoneyHistory(req);
+        res.status(result.status).json(result.data);
+    } catch (err) {
+        console.error('Get pocket money history error:', err);
         res.status(500).json({ message: 'Server error' });
     }
 }

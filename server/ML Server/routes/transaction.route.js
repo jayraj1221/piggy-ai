@@ -5,11 +5,13 @@ const {
   assignPocketMoney,
   spendPocketMoney,
   getTransactionHistory,
+  getPocketMoneyHistory
 } = require('../controllers/transaction.controller');
 
 
 router.post('/assign', assignPocketMoney);
 router.post('/spend', spendPocketMoney);
-router.get('/getTransactionHistory', getTransactionHistory);
+router.post('/getTransactionHistory', getTransactionHistory);
+router.post('/getPocketMoneyHistory', getPocketMoneyHistory);
 
 module.exports = router;

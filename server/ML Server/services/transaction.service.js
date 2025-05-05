@@ -85,3 +85,15 @@ exports.handleGetTransactionHistory = async (req) => {
     return { status: 500, data: { message: 'Server error' } };
   }
 }
+
+exports.handleGetPocketMoneyHistory = async (req) => {
+  const { userId } = req.body;
+
+  try {
+    const pocketMoneyHistory = await PocketMoney.find({ childId: userId });
+    return { status: 200, data: pocketMoneyHistory };
+  } catch (error) {
+    console.error('Error fetching pocket money history:', error);
+    return { status: 500, data: { message: 'Server error' } };
+  }
+}
