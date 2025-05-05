@@ -61,3 +61,12 @@ exports.getChildren = async (req, res) => {
     res.status(error.statusCode || 500).json({ message: error.message || 'Server error' });
   }
 }
+
+exports.getUserDetails = async (req, res) => {
+  try {
+    res.status(200).json(req.user);
+  } catch (error) {
+    console.error('Error fetching user details:', error);
+    res.status(error.statusCode || 500).json({ message: error.message || 'Server error' });
+  }
+};

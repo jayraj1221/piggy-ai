@@ -97,3 +97,28 @@ exports.handleGetPocketMoneyHistory = async (req) => {
     return { status: 500, data: { message: 'Server error' } };
   }
 }
+
+// controllers/transactions.js
+
+exports.handleGetMonthlySpent = async (req) => {
+  const { userId } = req.query;
+
+  try {
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+
+    const transactions = await Transaction.find({
+      childId: userId,
+      createdAt: { $gte: firstDay, $lte: lastDay }
+    });
+
+    const totalSpent = transactions.reduce((sum, tx) => sum + tx.amount, 0);
+
+    return { status: 200, data: { totalSpent } };
+  } catch (error) {
+    console.error('Error fetching monthly spent:', error);
+    return { status: 500, data: { message: 'Server error' } };
+  }
+};
+

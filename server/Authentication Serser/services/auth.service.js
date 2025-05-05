@@ -67,13 +67,7 @@ exports.loginUser = async ({ email, password }) => {
 
   return {
     message: 'Login successful',
-    user: {
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      parentId: user.parentId || null,
-    },
+    user,
     token,
   };
 };

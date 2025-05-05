@@ -3,12 +3,12 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // Stores user object
-  const [token, setToken] = useState(null); // Stores auth token
-  const [loading, setLoading] = useState(true); // Track if we're still initializing
+  const [user, setUser] = useState(null); 
+  const [token, setToken] = useState(null); 
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
-    // Load token and user data from localStorage on first load
+
     const savedToken = localStorage.getItem("token");
     const savedUser = localStorage.getItem("user");
 
@@ -20,7 +20,7 @@ export const UserProvider = ({ children }) => {
       setUser(JSON.parse(savedUser));
     }
 
-    setLoading(false); // Done loading from localStorage
+    setLoading(false); 
   }, []);
 
   const login = (userData, authToken) => {

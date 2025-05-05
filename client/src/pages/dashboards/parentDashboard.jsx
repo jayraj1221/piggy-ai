@@ -8,10 +8,10 @@ import SummaryCard from "../../components/summary-card";
 import { useUser } from "../../context/UserContext";
 import AddChildModal from "../../components/add-child-modal";
 
-export default  function ParentDashboard() {
+export default function ParentDashboard() {
   const [filter, setFilter] = useState("All");
   const navigate = useNavigate();
-  const { user, logout, loading, token } =  useUser();
+  const { user, logout, loading, token } = useUser();
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [children, setChildren] = useState([]);
   const [loadingChildren, setLoadingChildren] = useState(true);
@@ -23,7 +23,7 @@ export default  function ParentDashboard() {
         headers: {
           Authorization: `Bearer ${token || localStorage.getItem('token')}`,
           'Content-Type': 'application/json'
-        },          
+        },
       });
 
       const data = await res.json();
@@ -48,12 +48,12 @@ export default  function ParentDashboard() {
       fetchChildren();
     }
   }, [user, loading, navigate]);
-  
+
   const handleChildAdded = () => {
     setAddModalOpen(false);   // close modal
     fetchChildren();          // refetch updated list
   };
-  
+
   const transactions = [
     { id: 1, type: "deposit", child: "Alex", label: "Weekly Allowance", amount: 10, date: "2 days ago" },
     { id: 2, type: "withdrawal", child: "Jamie", label: "Toy Store Purchase", amount: -15.99, date: "3 days ago" },
@@ -63,8 +63,8 @@ export default  function ParentDashboard() {
   const filteredTransactions = filter === "All"
     ? transactions
     : transactions.filter((t) =>
-        filter === "Deposits" ? t.amount > 0 : t.amount < 0
-      );
+      filter === "Deposits" ? t.amount > 0 : t.amount < 0
+    );
 
   return (
     <div className="min-h-screen bg-gray-50 text-black p-6 space-y-8">
@@ -98,31 +98,31 @@ export default  function ParentDashboard() {
           <Button onClick={() => setAddModalOpen(true)}>+ Add Child</Button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {loadingChildren ? (
-           <p>Loading children...</p>
-            ) : children.length === 0 ? (
-           <p>No children added yet.</p>
-            ) : (
+          {loadingChildren ? (
+            <p>Loading children...</p>
+          ) : children.length === 0 ? (
+            <p>No children added yet.</p>
+          ) : (
             children.map((child) => (
               <ChildCard
-              key={child._id || child.id}
-              name={child.name}
-              balance={typeof child.pocketMoney === 'number' ? child.pocketMoney : 0}
-              creditScore={child.creditScore}
-              totalCreditScore={850}
-              progress={
-                typeof child.creditScore === 'number'
-                  ? Math.min((child.creditScore / 850) * 100, 100)
-                  : 0
-              }
-              childId={child._id || child.id}
-              parentId={user._id || user.id}
-              onMoneyAssigned={handleChildAdded}
+                key={child._id || child.id}
+                name={child.name}
+                balance={typeof child.pocketMoney === 'number' ? child.pocketMoney : 0}
+                creditScore={child.creditScore}
+                totalCreditScore={850}
+                progress={
+                  typeof child.creditScore === 'number'
+                    ? Math.min((child.creditScore / 850) * 100, 100)
+                    : 0
+                }
+                childId={child._id || child.id}
+                parentId={user._id || user.id}
+                onMoneyAssigned={handleChildAdded}
               />
 
-            
-          ))
-        )}
+
+            ))
+          )}
 
 
         </div>
@@ -135,9 +135,8 @@ export default  function ParentDashboard() {
           {["All", "Deposits", "Withdrawals"].map((type) => (
             <button
               key={type}
-              className={`px-4 py-1 rounded-full border ${
-                filter === type ? "bg-blue-100 text-primary" : "text-gray-600"
-              }`}
+              className={`px-4 py-1 rounded-full border ${filter === type ? "bg-blue-100 text-primary" : "text-gray-600"
+                }`}
               onClick={() => setFilter(type)}
             >
               {type}
@@ -157,9 +156,8 @@ export default  function ParentDashboard() {
                 </p>
               </div>
               <p
-                className={`font-semibold ${
-                  tx.amount >= 0 ? "text-green-600" : "text-red-500"
-                }`}
+                className={`font-semibold ${tx.amount >= 0 ? "text-green-600" : "text-red-500"
+                  }`}
               >
                 {tx.amount >= 0 ? "+" : "-"}${Math.abs(tx.amount).toFixed(2)}
               </p>
@@ -173,16 +171,16 @@ export default  function ParentDashboard() {
 
       {/* Add Child Modal */}
       {isAddModalOpen && user && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <AddChildModal
-  isOpen={isAddModalOpen}
-  onClose={() => setAddModalOpen(false)}
-  onSuccess={handleChildAdded} 
-  onMoneyAssigned={handleChildAdded}
-/>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <AddChildModal
+            isOpen={isAddModalOpen}
+            onClose={() => setAddModalOpen(false)}
+            onSuccess={handleChildAdded}
+            onMoneyAssigned={handleChildAdded}
+          />
 
-  </div>
-)}
+        </div>
+      )}
     </div>
   );
 }

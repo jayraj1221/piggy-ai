@@ -11,5 +11,6 @@ router.post('/login', authController.loginUser);
 router.post('/assign-pocket-money', authController.assignPocketMoney);
 router.post('/get-user', authController.getUser);
 router.get('/get-children', protect, authController.getChildren);
+router.get('/user', protect, authController.getUserDetails);
 
 module.exports = router;
