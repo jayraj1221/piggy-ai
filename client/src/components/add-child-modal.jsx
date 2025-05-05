@@ -5,7 +5,7 @@ import { Label } from './label';
 import Button from './button';
 import { useUser } from '../context/UserContext';
 
-export default function AddChildModal({ isOpen, onClose }) {
+export default function AddChildModal({ isOpen, onClose, onSuccess }) {
   const { user, token } = useUser();
   const [formData, setFormData] = useState({
     name: '',
@@ -56,7 +56,7 @@ export default function AddChildModal({ isOpen, onClose }) {
       }
 
       setSuccess('Child account created!');
-      setFormData({ name: '', email: '', password: '' });
+      onSuccess();
     } catch (err) {
       setError(err.message);
     } finally {
