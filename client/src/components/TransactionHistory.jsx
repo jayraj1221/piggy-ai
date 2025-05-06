@@ -13,8 +13,8 @@ const TransactionHistory = ({ data = [] }) => {
     const hasMoreTransactions = transactions.length > 5;
 
     return (
-        <div className="space-y-4">
-            <div className="space-y-2">
+        <div className="space-y-4 overflow-y-auto">
+            <div className="space-y-2 overflow-y-auto">
                 {displayedTransactions.length > 0 ? (
                     displayedTransactions.map((item) => (
                         <TransactionItem

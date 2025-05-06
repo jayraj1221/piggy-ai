@@ -106,8 +106,8 @@ export default function ChildDetails() {
           <h4 className="text-lg font-semibold mb-2">Credit Factors</h4>
           <p className="text-sm text-gray-500 mb-4">What affects your score</p>
           <div className="space-y-3">
-            {[{ label: "Payment History", percent: 95, remark: "Excellent", color: "bg-green-500" },
-              { label: "Spending Habits", percent: 70, remark: "Good", color: "bg-green-400" },
+            {[{ label: "Payment History", percent: 95, remark: "Excellent", color: "bg-cyan-500" },
+              { label: "Spending Habits", percent: 70, remark: "Good", color: "bg-cyan-400" },
               { label: "Savings Rate", percent: 50, remark: "Fair", color: "bg-yellow-400" }].map(
               ({ label, percent, remark, color }) => (
                 <div key={label}>
@@ -124,7 +124,7 @@ export default function ChildDetails() {
           </div>
         </div>
       </div>
-      <section className="mb-6">
+      <section className="mb-6 overflow-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Recent Activity</h2>
           <div className="text-sm text-gray-500">
@@ -135,20 +135,22 @@ export default function ChildDetails() {
         <div className="flex gap-3 mb-4 text-sm">
           <button
             onClick={() => setHistory(true)}
-            className={`px-3 py-1 rounded-full ${history ? 'bg-green-100 text-green-700' : 'text-gray-600'}`}
+            className={`px-3 py-1 rounded-full ${history ? 'bg-cyan-100 text-cyan-700' : 'text-gray-600'}`}
           >
             Spend Money
           </button>
 
           <button
             onClick={() => setHistory(false)}
-            className={`px-3 py-1 rounded-full ${!history ? 'bg-green-100 text-green-700' : 'text-gray-600'}`}
+            className={`px-3 py-1 rounded-full ${!history ? 'bg-cyan-100 text-cyan-700' : 'text-gray-600'}`}
           >
             Pocket Money
           </button>
         </div>
-
+        <div className="overflow-y-auto">
         <TransactionHistory data={history ? transactionItems : pocketMoneyHistory} />
+
+        </div>
       </section>
 
 
