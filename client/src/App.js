@@ -7,14 +7,18 @@ import ParentLoginPage from './pages/login/parent';
 import RegisterParentPage from './pages/register/parent';
 import ParentDashboard from './pages/dashboards/parentDashboard';
 import ChildDashboard from './pages/dashboards/childDashboard';
+import ChildDetails from './pages/ChildDetails';
 import { UserProvider } from "./context/UserContext";
+import { ChildProvider } from './context/ChildDetailsContext';
 
 function App() {
   return (
     <UserProvider>
+      <ChildProvider>
       <Router>
         <div className="App">
           <Routes>
+            <Route path="/child/:id" element={<ChildDetails />} />
             <Route path="/login/parent" element={<ParentLoginPage />} />
             <Route path="/register/parent" element={<RegisterParentPage />} />
             <Route path="/login/child" element={<ChildLoginPage />} />
@@ -24,6 +28,7 @@ function App() {
           </Routes>
         </div>
       </Router>
+      </ChildProvider>
     </UserProvider>
   );
 }

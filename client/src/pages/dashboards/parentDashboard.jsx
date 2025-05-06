@@ -7,13 +7,13 @@ import ChildCard from "../../components/child-card";
 import SummaryCard from "../../components/summary-card";
 import { useUser } from "../../context/UserContext";
 import AddChildModal from "../../components/add-child-modal";
-
+import { useChildContext } from "../../context/ChildDetailsContext";
 export default function ParentDashboard() {
   const [filter, setFilter] = useState("All");
   const navigate = useNavigate();
   const { user, logout, loading, token } = useUser();
   const [isAddModalOpen, setAddModalOpen] = useState(false);
-  const [children, setChildren] = useState([]);
+  const {childList , setChildrenList} = useChildContext();
   const [loadingChildren, setLoadingChildren] = useState(true);
 
   const fetchChildren = async () => {
@@ -28,8 +28,7 @@ export default function ParentDashboard() {
 
       const data = await res.json();
       if (res.ok) {
-        console.log(data)
-        setChildren(data || []);
+        setChildrenList(data || []);
       } else {
         console.error(data.message || 'Failed to fetch children');
       }
@@ -79,7 +78,12 @@ export default function ParentDashboard() {
           <a href="#">Children</a>
           <a href="#">Settings</a>
         </nav>
-        <button className="flex items-center gap-1 text-red-500" onClick={logout}>
+        <button className="flex items-center gap-1 text-red-500" onClick={
+          () => {
+            logout();
+            navigate('/');
+          }
+        }>
           <LogOut className="h-4 w-4" /> Logout
         </button>
       </header>
@@ -100,26 +104,19 @@ export default function ParentDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {loadingChildren ? (
             <p>Loading children...</p>
-          ) : children.length === 0 ? (
+          ) : childList.length === 0 ? (
             <p>No children added yet.</p>
           ) : (
-            children.map((child) => (
+            childList
+            ?.filter(child => child != null) // filters out null or undefined
+            .map((child) => (
               <ChildCard
-                key={child._id || child.id}
-                name={child.name}
-                balance={typeof child.pocketMoney === 'number' ? child.pocketMoney : 0}
-                creditScore={child.creditScore}
-                totalCreditScore={850}
-                progress={
-                  typeof child.creditScore === 'number'
-                    ? Math.min((child.creditScore / 850) * 100, 100)
-                    : 0
-                }
-                childId={child._id || child.id}
-                parentId={user._id || user.id}
-                onMoneyAssigned={handleChildAdded}
-              />
-
+              key={child._id || child.id}
+              child={child}  // Pass the entire child object as a prop
+              parentId={user?._id || user?.id}
+              onMoneyAssigned={handleChildAdded}
+            />
+            
 
             ))
           )}
@@ -129,7 +126,7 @@ export default function ParentDashboard() {
       </section>
 
       {/* Recent Transactions */}
-      <section>
+      {/* <section>
         <h2 className="text-xl font-bold mb-4">Recent Transactions</h2>
         <div className="flex gap-4 mb-4">
           {["All", "Deposits", "Withdrawals"].map((type) => (
@@ -167,7 +164,7 @@ export default function ParentDashboard() {
         <div className="mt-4 text-center">
           <Button variant="outline">View All Transactions</Button>
         </div>
-      </section>
+      </section> */}
 
       {/* Add Child Modal */}
       {isAddModalOpen && user && (

@@ -19,7 +19,8 @@ export default function AssignMoneyModal({ childId, parentId, onClose, onSuccess
       const data = await res.json();
       if (res.ok) {
         setMessage("Success! Pocket money assigned.");
-        onSuccess(); // Pass transaction or new balance
+        console.log(res)
+        onSuccess(100); // Pass transaction or new balance
         onClose(); // Close modal
       } else {
         setMessage(data.message || "Failed to assign money.");

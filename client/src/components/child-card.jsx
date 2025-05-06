@@ -1,9 +1,22 @@
 import { useState } from "react";
 import Button from "./button";
 import AssignMoneyModal from "./assign-money-modal";
+import { useNavigate } from "react-router-dom";
+import { useChildContext } from "../context/ChildDetailsContext"; 
 
-export default function ChildCard({ name, balance, creditScore, totalCreditScore, progress, childId, parentId, onMoneyAssigned }) {
+export default function ChildCard({ child, parentId, onMoneyAssigned }) {
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
+  const { setChildDetails } = useChildContext(); 
+
+  const { name, pocketMoney, creditScore, _id } = child;
+  const totalCreditScore = 850;
+  const progress = (creditScore / totalCreditScore) * 100;
+
+  const handleViewDetails = () => {
+    setChildDetails(child); // ✅ Set selected child in context
+    navigate(`/child/${_id}`);
+  };
 
   return (
     <div className="bg-white p-6 rounded-xl shadow space-y-2">
@@ -14,7 +27,7 @@ export default function ChildCard({ name, balance, creditScore, totalCreditScore
       </div>
       <p className="text-sm">
         <span className="text-gray-600">Current Balance: </span>
-        <span className="font-semibold">{balance.toFixed(2)}</span>
+        <span className="font-semibold">{(pocketMoney || 0).toFixed(2)}</span>
       </p>
       <p className="text-sm text-gray-600">Credit Score: {creditScore}</p>
       <div className="h-2 w-full bg-gray-200 rounded">
@@ -27,13 +40,18 @@ export default function ChildCard({ name, balance, creditScore, totalCreditScore
         <span>{progress.toFixed(2)}% complete</span>
         <Button size="sm" onClick={() => setShowModal(true)}>Add Money</Button>
       </div>
-      <Button variant="outline" size="sm" className="mt-2">
+      <Button
+        variant="outline"
+        size="sm"
+        className="mt-2"
+        onClick={handleViewDetails} // ✅ Use handler that sets context + navigates
+      >
         View Details
       </Button>
 
       {showModal && (
         <AssignMoneyModal
-          childId={childId}
+          childId={_id}
           parentId={parentId}
           onClose={() => setShowModal(false)}
           onSuccess={onMoneyAssigned}

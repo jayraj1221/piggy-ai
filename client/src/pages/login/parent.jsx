@@ -49,7 +49,7 @@ export default function ParentLoginPage() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
-          <div className="bg-white dark:bg-gray-950 px-6 py-12 shadow sm:rounded-lg sm:px-12">
+          <div className="bg-white dark:bg-gray-950 px-6 py-12 shadow sm:rounded-lg sm:px-12 border-2 border-primary">
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <Label htmlFor="email">Email address</Label>
@@ -61,6 +61,7 @@ export default function ParentLoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className='w-full h-10'
                 />
               </div>
 
@@ -74,6 +75,7 @@ export default function ParentLoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className='w-full h-10'
                 />
               </div>
 
